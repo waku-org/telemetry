@@ -81,6 +81,28 @@ func createTables(db *sql.DB) error {
 		return err
 	}
 
+	sqlStmt = `CREATE TABLE IF NOT EXISTS wakuMessages (
+		id SERIAL PRIMARY KEY,
+		walletAddress VARCHAR(255),
+		peerIdSender VARCHAR(255) NOT NULL,
+		peerIdReporter VARCHAR(255) NOT NULL,
+		sequenceHash VARCHAR(255) NOT NULL,
+		sequenceTotal VARCHAR(255) NOT NULL,
+		sequenceIndex VARCHAR(255) NOT NULL,
+		contentTopic VARCHAR(255) NOT NULL,
+		pubsubTopic VARCHAR(255) NOT NULL,
+		timestamp INTEGER NOT NULL,
+		createdAt INTEGER NOT NULL,
+
+		constraint wakuMessages_unique unique(peerIdSender, peerIdReporter, sequenceHash, sequenceTotal, sequenceIndex, contentTopic, pubsubTopic)
+
+	);`
+	_, err = db.Exec(sqlStmt)
+
+	if err != nil {
+		return err
+	}
+
 	sqlStmt = `CREATE TABLE IF NOT EXISTS receivedMessageAggregated (
 		id SERIAL PRIMARY KEY,
 		durationInSeconds INTEGER NOT NULL,
